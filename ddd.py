@@ -1,10 +1,14 @@
 import numpy as np
 np.random.seed(42)
 import keras
+from time import time
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import SGD
+#
+from keras.callbacks import TensorBoard
+#
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 print( "X train.shape = ", X_train.shape )
 print( "y_train.shape = ", y_train.shape )
@@ -17,6 +21,7 @@ X_train = X_train.reshape(60000,784).astype('float32')
 X_test = X_test.reshape(10000,784).astype('float32')
 X_train /= 255
 X_test /= 255
+
 print( "X_train[0] = ", X_train[0] )
 #
 # This changes the output layer original integer values to 'one hot encoding'
@@ -67,7 +72,7 @@ model.add(Dense((10), activation='softmax'))
 model.summary()
 #
 # possibility here to choose from as the cost function are:
-* 'mean_squared_error' (also called the mean quadratic cost function)
+# 'mean_squared_error' (also called the mean quadratic cost function)
 # and
 # 'categorical_crossentropy' (designed to let it grow fast with large cost function values, and much less when small difference in the cost function values)
 #
@@ -78,6 +83,57 @@ model.summary()
 # model.compile( loss='categorical_crossentropy', optimizer=SGD(lr=0.01), metrics=['accuracy'])
 model.compile( loss='mean_squared_error', optimizer=SGD(lr=0.01), metrics=['accuracy'])
 #
-# in general choosing 'relu' and 'categorical_crossentropy' gives the fastest learning. You can also vary the 'learning rate (=lr))
+# log file for TensorBoard
 #
-model.fit( X_train, y_train, batch_size=128, epochs=20, validation_data=(X_test, y_test))
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+#
+# in general choosing 'relu' and 'categorical_crossentropy' gives the fastest learning. You can also vary the 'learning rate' (=lr))
+#
+model.fit( X_train, y_train, batch_size=128, epochs=20, validation_data=(X_test, y_test), callbacks=[tensorboard])
+#
+# generate predictions on new data // see https://keras.io
+#
+classes = model.predict( X_test, batch_size = 128 )
+print( classes )
+#
+# The highest value is to be found in the entry of number 7 (=0.16...). So that is the prediction.
+#
+# Change e.g.:
+#
+# * more iterations (=epochs),
+# * other function instead of sigmoid (=relu, tanh, ...)
+# * another cost function (e.g. cross entropy)
+#
+# e.g. disable / enable the relevant lines in the source code above (relu, ...).
+#
+def FNArrayGetIndexMaximumI( list ):
+ maximum = 0
+ value = 0
+ I = 0
+ indexI = 0
+ for I, value in enumerate( list ):
+  if ( value > maximum ):
+   maximum = value
+   indexI = I
+ return( indexI )
+#
+# check the first predicted values
+#
+print( " " )
+print( classes[0] )
+print( y_test[0] )
+print( np.amax( classes[0] ) )
+print( "the prediction of the neural network is that the most probable result = ", FNArrayGetIndexMaximumI( classes[ 0 ] ) )
+#
+print( " " )
+print( classes[1] )
+print( y_test[1] )
+print( np.amax( classes[1] ) )
+print( "the prediction of the neural network is that the most probable result = ", FNArrayGetIndexMaximumI( classes[ 1 ] ) )
+#
+print( " " )
+print( classes[2] )
+print( y_test[2] )
+print( np.amax( classes[2] ) )
+print( "the prediction of the neural network is that the most probable result = ", FNArrayGetIndexMaximumI( classes[ 2 ] ) )
+

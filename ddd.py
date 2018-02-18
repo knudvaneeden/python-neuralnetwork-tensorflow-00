@@ -22,16 +22,15 @@ X_train /= 255
 X_test = X_test.reshape(10000,784).astype('float32')
 X_test /= 255
 
-#---------------
 # debug begin
-# print ( y_test )
-# print( type( y_test ) )
-# print( y_test.shape )
-# print( type( y_test ).__name__ )
-# exit()
+print ( y_test ) # array
+print( type( y_test ) ) # type
+print( y_test.shape ) # dimensions
+print( y_test.ndim ) # total number of dimensions
+print( type( y_test ).__name__ ) # typicall returns ndarray
+exit()
 # debug end
 #---------------
-
 
 #
 n_classes = 10

@@ -17,21 +17,22 @@ from keras.callbacks import TensorBoard
 
 X_train = X_train.reshape(60000,784).astype('float32')
 #
-
-#---------------
-# debug begin
-print ( X_train )
-print( type( X_train ) )
-print( type( X_train ).__name__ )
-exit()
-# debug end
-#---------------
-
-
 X_train /= 255
 #
 X_test = X_test.reshape(10000,784).astype('float32')
 X_test /= 255
+
+#---------------
+# debug begin
+# print ( y_test )
+# print( type( y_test ) )
+# print( y_test.shape )
+# print( type( y_test ).__name__ )
+# exit()
+# debug end
+#---------------
+
+
 #
 n_classes = 10
 y_train = keras.utils.to_categorical( y_train, n_classes)
